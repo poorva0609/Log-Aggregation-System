@@ -12,13 +12,11 @@ app = FastAPI()
 MONGO_URI = os.getenv("MONGO_URI")
 DB_NAME = os.getenv("DB_NAME")
 
-# Mongo connection (replace with your URI)
+
 client = AsyncIOMotorClient(MONGO_URI)
 db = client[os.getenv("DB_NAME")]
 collection = db["logs"]
 
-
-# 🧾 Log schema
 class Log(BaseModel):
     level: str
     message: str
@@ -26,7 +24,6 @@ class Log(BaseModel):
     timestamp: Optional[datetime] = datetime.utcnow()
 
 
-# 🟢 BULK INSERT
 @app.post("/logs/bulk")
 async def insert_logs(logs: List[Log]):
     docs = [log.dict() for log in logs]
@@ -41,7 +38,6 @@ async def insert_logs(logs: List[Log]):
     }
 
 
-# 🔍 BULK FETCH
 @app.get("/logs")
 async def get_logs(
     level: Optional[str] = None,
